@@ -1,0 +1,2 @@
+add_library(unique_ptr INTERFACE)
+target_include_directories(unique_ptr INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
