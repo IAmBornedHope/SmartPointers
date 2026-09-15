@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <type_traits>
 
 template<typename T>
@@ -54,4 +55,19 @@ public:
         }
     }
 
+    Type* get() const {
+        return pointer_;
+    }
+
+    Type& operator*() const requires(!std::is_array_v<T>) {
+        return *pointer_;
+    }
+    
+    Type& operator[](std::size_t index) const requires(std::is_array_v<T>) {
+        return pointer_[index];
+    }
+
+    Type* operator->() const requires(!std::is_array_v<T>) {
+        return pointer_;
+    }
 };
