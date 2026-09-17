@@ -42,7 +42,9 @@
 # Build directories
 build/
 Build/
+build_tests/
 build-*/
+.vscode/
 
 # CMake generated files
 CMakeFiles/
