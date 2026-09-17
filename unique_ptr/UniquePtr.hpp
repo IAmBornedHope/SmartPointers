@@ -6,7 +6,6 @@
 template<typename T>
 class UniquePtr {
     using Type = std::remove_extent_t<T>;
-
 private:
     Type* pointer_ = nullptr;
 
@@ -38,20 +37,16 @@ public:
         
     }
 
-    ~UniquePtr() {
-        destroy(pointer_);
-    }
-
-    Type* release() {
+    Type* release() noexcept {
         Type* temp = pointer_;
         pointer_ = nullptr;
         return temp;
     }
 
-    void reset (Type* p = nullptr) {
-        if (pointer_ != p) {
+    void reset (Type* ptr = nullptr) {
+        if (pointer_ != ptr) {
             destroy(pointer_);
-            pointer_ = p;
+            pointer_ = ptr;
         }
     }
 
@@ -70,4 +65,26 @@ public:
     Type* operator->() const requires(!std::is_array_v<T>) {
         return pointer_;
     }
+
+    explicit operator bool() const noexcept {
+        return pointer_ != nullptr;
+    }
+    ~UniquePtr() {
+        destroy(pointer_);
+    }
 };
+
+
+template<typename T, typename... Args>
+        requires(!std::is_array_v<T>)
+UniquePtr<T> make_unique(Args&&... args) {
+    using Type = std::remove_extent_t<T>;
+    return UniquePtr<T>(new T(std::forward<Args>(args)...));
+}
+
+template<typename T>
+        requires(std::is_array_v<T>)
+UniquePtr<T> make_unique(std::size_t size) {
+    using Type = std::remove_extent_t<T>;
+    return UniquePtr<T>(new Type[size]{});
+}
