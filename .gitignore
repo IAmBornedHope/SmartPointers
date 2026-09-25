@@ -39,6 +39,8 @@
 *.out
 *.app
 
+bench.txt
+valgrind
 # Build directories
 build/
 Build/
